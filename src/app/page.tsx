@@ -2,235 +2,48 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import SiteHeader from "../components/SiteHeader";
 
-const popularAreas = [
-  "Baner",
-  "Wakad",
-  "Hinjawadi",
-  "Kothrud",
-  "Hadapsar",
-  "Viman Nagar",
-];
 
-const schoolTypes = [
-  { title: "Pre-Schools", subtitle: "Early learning", icon: "🧸" },
-  { title: "Primary Schools", subtitle: "Classes 1–5", icon: "📚" },
-  { title: "Secondary Schools", subtitle: "Classes 6–10", icon: "🎓" },
-  { title: "International Schools", subtitle: "Global curriculum", icon: "🌍" },
+const cities = ["Delhi", "Bangalore", "Pune", "Gurgaon", "Hyderabad", "Kolkata", "Noida", "Mumbai"];
+const areas = ["All Delhi", "Rohini", "Dwarka", "Vasant Kunj", "Greater Kailash", "Pitampura", "Saket"];
+const popular = [
+  { name: "Delhi", icon: "🏛️", count: "1,800+ schools" }, { name: "Bangalore", icon: "🌳", count: "1,200+ schools" },
+  { name: "Pune", icon: "🏫", count: "950+ schools" }, { name: "Gurgaon", icon: "🏙️", count: "680+ schools" },
+  { name: "Noida", icon: "🌆", count: "540+ schools" }, { name: "Hyderabad", icon: "🌇", count: "720+ schools" },
 ];
+const schools = [
+  { name: "Delhi Public School, Vasant Kunj", area: "Vasant Kunj, South Delhi", board: "CBSE", fee: "₹1.8L – ₹2.4L", image: "photo-1580582932707-520aed937b7b", tag: "Admissions open", rating: "4.8" },
+  { name: "The Shri Ram School", area: "Moulsari Avenue, Gurugram", board: "ICSE", fee: "₹2.1L – ₹3.2L", image: "photo-1509062522246-3755977927d7", tag: "Popular choice", rating: "4.9" },
+  { name: "Modern School", area: "Barakhamba Road, Central Delhi", board: "CBSE", fee: "₹1.4L – ₹2.2L", image: "photo-1562774053-701939374585", tag: "Verified school", rating: "4.7" },
+];
+const schoolSlugs = ["delhi-public-school-vasant-kunj", "the-shri-ram-school-gurugram", "modern-school-barakhamba"];
 
 export default function HomePage() {
-  const [query, setQuery] = useState("");
-  const [area, setArea] = useState("All Pune");
-  const [board, setBoard] = useState("All Boards");
+  const [city, setCity] = useState("Delhi");
+  const [area, setArea] = useState("All Delhi");
+  const [grade, setGrade] = useState("Select class");
+  const [search, setSearch] = useState("");
+  const go = (e: React.FormEvent) => { e.preventDefault(); const p = new URLSearchParams({ city, ...(area !== `All ${city}` ? { area } : {}), ...(grade !== "Select class" ? { grade } : {}), ...(search ? { q: search } : {}) }); window.location.href = `/schools?${p}`; };
 
-  function searchSchools() {
-    const params = new URLSearchParams();
-    if (query.trim()) params.set("q", query.trim());
-    if (area !== "All Pune") params.set("area", area);
-    if (board !== "All Boards") params.set("board", board);
+  return <main>
+    <SiteHeader />
 
-    window.location.href = `/schools?${params.toString()}`;
-  }
+    <section className="hero"><div className="hero-orb orb-one"/><div className="hero-orb orb-two"/><div className="wrap hero-grid"><div className="hero-copy"><div className="eyebrow"><span className="spark">✦</span> A better start begins here</div><h1>Find the school<br/>where they&apos;ll <em>thrive.</em></h1><p>Every child is different. Find a school that feels just right—with honest details, parent reviews and a little expert help.</p><div className="trust-row"><div className="avatar-stack"><span>👩🏽</span><span>👨🏻</span><span>👩🏼</span><span className="avatar-more">+</span></div><div><strong>Trusted by 7 lakh+ parents</strong><small>Finding happy places for little learners</small></div><div className="trust-stars">★★★★★ <small>4.8/5</small></div></div></div>
+      <div className="search-card"><div className="search-card-head"><div><span className="mini-label">LET&apos;S FIND YOUR SCHOOL</span><h2>Your search starts here</h2></div><span className="card-icon">✦</span></div><div className="type-tabs"><button className="active">☀ Day schools</button><button onClick={() => window.location.href="/schools?type=boarding"}>⌂ Boarding</button><button onClick={() => window.location.href="/schools?type=online"}>◉ Online</button></div><form onSubmit={go}><label className="field-label">Where are you looking?</label><div className="field-wrap"><span>⌖</span><select value={city} onChange={e=>{setCity(e.target.value);setArea(`All ${e.target.value}`)}}>{cities.map(c=><option key={c}>{c}</option>)}</select></div><div className="form-split"><div><label className="field-label">Area or locality</label><div className="field-wrap"><span>⌖</span><select value={area} onChange={e=>setArea(e.target.value)}>{[`All ${city}`,...areas.slice(1)].map(a=><option key={a}>{a}</option>)}</select></div></div><div><label className="field-label">Class / grade</label><div className="field-wrap"><span>▦</span><select value={grade} onChange={e=>setGrade(e.target.value)}>{["Select class","Nursery","Pre-Nursery","KG","Class 1","Class 2","Class 3","Class 6","Class 9","Class 11"].map(g=><option key={g}>{g}</option>)}</select></div></div></div><label className="field-label">School name <span className="optional">(optional)</span></label><div className="field-wrap"><span>⌕</span><input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Try a school, area or landmark"/></div><button className="search-submit" type="submit">Find my school <span>→</span></button></form><div className="secure-note"><span>✓</span> 100% free · No sign-up required</div></div>
+      <div className="hero-note"><span>✦</span> A little less searching. A lot more dreaming.</div></div><div className="scroll-hint">SCROLL TO EXPLORE <span>↓</span></div></section>
 
-  return (
-    <main className="min-h-screen bg-white text-slate-800">
-      <header className="border-b border-slate-100 bg-white">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-4">
-          <Link href="/" className="text-2xl font-extrabold tracking-tight text-blue-700">
-            Schoolora<span className="text-orange-500">.</span>
-          </Link>
+    <section className="stats-strip"><div className="wrap stats-grid"><div><strong>1.8 lakh<span>+</span></strong><small>Schools to explore</small></div><div><strong>7 lakh<span>+</span></strong><small>Parents guided</small></div><div><strong>50<span>+</span></strong><small>Cities across India</small></div><div className="stats-note">Little steps today,<br/><em>big futures tomorrow.</em></div></div></section>
 
-          <nav className="hidden items-center gap-7 text-sm font-medium md:flex">
-            <Link href="/schools" className="hover:text-blue-700">Find Schools</Link>
-            <Link href="/compare" className="hover:text-blue-700">Compare</Link>
-            <Link href="/shortlist" className="hover:text-blue-700">Shortlist</Link>
-            <Link href="/counselling" className="hover:text-blue-700">Counselling</Link>
-          </nav>
+    <section className="section wrap city-section"><div className="section-head"><div><span className="section-kicker">A GOOD PLACE TO BEGIN</span><h2>Big dreams, <em>near home.</em></h2><p>Start with a city. We&apos;ll help you find the neighbourhood that feels right.</p></div><Link href="/schools" className="text-link">Explore all cities <span>→</span></Link></div><div className="city-grid">{popular.map((c,i)=><Link className={`city-card city-${i}`} href={`/schools?city=${encodeURIComponent(c.name)}`} key={c.name}><div className="city-art">{c.icon}</div><div><strong>{c.name}</strong><small>{c.count}</small></div><span className="city-arrow">↗</span></Link>)}</div></section>
 
-          <Link
-            href="/schools"
-            className="rounded-lg bg-blue-700 px-4 py-2.5 text-sm font-semibold text-white hover:bg-blue-800"
-          >
-            Explore Schools
-          </Link>
-        </div>
-      </header>
+    <section className="featured-section"><div className="wrap"><div className="section-head"><div><span className="section-kicker">PARENT FAVOURITES</span><h2>Schools parents <em>love.</em></h2><p>A few wonderful places families are exploring right now.</p></div><Link href="/schools" className="text-link">See all schools <span>→</span></Link></div><div className="school-grid">{schools.map((s,i)=><article className="school-card" key={s.name}><div className="school-photo" style={{backgroundImage:`url(https://images.unsplash.com/${s.image}?auto=format&fit=crop&w=800&q=80)`}}><span className="school-tag">✦ {s.tag}</span><button aria-label="Save school" className="heart" onClick={e=>{e.currentTarget.classList.toggle("saved");const key="schoolora-saved";const ids=JSON.parse(localStorage.getItem(key)||"[]") as string[];const id=`school-${i+1}`;const next=ids.includes(id)?ids.filter(x=>x!==id):[...ids,id];localStorage.setItem(key,JSON.stringify(next))}}>♡</button></div><div className="school-card-body"><div className="school-meta"><span>{s.board}</span><span>★ {s.rating}</span></div><h3>{s.name}</h3><p className="school-location">⌖ &nbsp;{s.area}</p><div className="school-fee"><span>Annual fees from</span><strong>{s.fee}</strong></div><div className="school-card-actions"><Link href={`/schools/${schoolSlugs[i]}`} className="outline-button">View details</Link><Link href={`/apply/${i+1}`} className="solid-button">Enquire <span>→</span></Link></div></div></article>)}</div></div></section>
 
-      <section className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-orange-50">
-        <div className="mx-auto grid max-w-7xl items-center gap-10 px-5 py-16 md:grid-cols-2 md:py-24">
-          <div>
-            <span className="inline-flex rounded-full bg-blue-100 px-4 py-2 text-sm font-semibold text-blue-800">
-              Find the right school for your child
-            </span>
+    <section className="wrap section how-section"><div className="how-heading"><span className="section-kicker">SCHOOL SEARCH, MADE HUMAN</span><h2>Three little steps.<br/><em>One big decision.</em></h2><p>School admissions can feel like a lot. We make the first steps feel easy.</p><Link href="/schools" className="solid-button how-button">Let&apos;s get started <span>→</span></Link></div><div className="steps"><div className="step"><span className="step-number">01</span><span className="step-emoji">🧭</span><div><h3>Tell us what matters</h3><p>Choose your city, class and the little things that make a school feel right for your child.</p></div></div><div className="step"><span className="step-number">02</span><span className="step-emoji">🔎</span><div><h3>Explore your shortlist</h3><p>Compare real details—fees, boards, facilities, distance and honest parent reviews.</p></div></div><div className="step"><span className="step-number">03</span><span className="step-emoji">🌱</span><div><h3>Take the next step</h3><p>Enquire, save favourites or talk to our friendly admissions experts. We&apos;re here.</p></div></div></div></section>
 
-            <h1 className="mt-6 text-4xl font-extrabold leading-tight tracking-tight text-slate-900 md:text-6xl">
-              Your child&apos;s future starts with the{" "}
-              <span className="text-blue-700">right school.</span>
-            </h1>
+    <section className="expert-section" id="help"><div className="wrap expert-card"><div className="expert-art"><div className="sun-shape">☀</div><div className="expert-person">👩🏻‍🏫</div><span className="art-star star-a">✦</span><span className="art-star star-b">✧</span><span className="art-doodle">〰</span></div><div className="expert-copy"><span className="section-kicker">A FRIEND IN YOUR CORNER</span><h2>Big choice?<br/><em>You don&apos;t have to make it alone.</em></h2><p>Our admissions experts listen first, understand your child, and help you find the right fit. No pressure. Just a little clarity.</p><div className="expert-perks"><span>✓ Personalised shortlist</span><span>✓ Completely free</span><span>✓ Real, caring humans</span></div><Link href="/counselling" className="expert-cta">Talk to an expert <span>→</span></Link><small className="expert-foot">7 lakh+ parents have found their way with us</small></div></div></section>
 
-            <p className="mt-5 max-w-xl text-base leading-7 text-slate-600 md:text-lg">
-              Discover schools in Pune, compare fee structures, explore
-              facilities and make a confident admission decision.
-            </p>
+    <section className="wrap section tools-section"><div className="section-head"><div><span className="section-kicker">A LITTLE HELP ALONG THE WAY</span><h2>Tools for <em>thoughtful parents.</em></h2><p>Good decisions start with the right questions.</p></div></div><div className="tools-grid"><Link href="/tools/age-checker" className="tool-card"><span className="tool-icon peach">🎂</span><div><small>ADMISSION PLANNER</small><h3>Age eligibility checker</h3><p>Know which class is right for your child.</p></div><span className="tool-arrow">↗</span></Link><Link href="/tools/board-adviser" className="tool-card"><span className="tool-icon mint">📚</span><div><small>LEARNING GUIDE</small><h3>Find the right board</h3><p>CBSE, ICSE, IB—what fits your family?</p></div><span className="tool-arrow">↗</span></Link><Link href="/smart-search" className="tool-card"><span className="tool-icon lavender">✨</span><div><small>SMART SEARCH</small><h3>What matters to you?</h3><p>Find schools that match your priorities.</p></div><span className="tool-arrow">↗</span></Link></div></section>
 
-            <div className="mt-8 flex flex-wrap gap-3 text-sm text-slate-600">
-              <span>✓ Explore schools</span>
-              <span>✓ Compare options</span>
-              <span>✓ Plan admissions</span>
-            </div>
-          </div>
-
-          <div className="rounded-3xl border border-white bg-white p-5 shadow-xl shadow-blue-100/60 md:p-7">
-            <h2 className="text-xl font-bold text-slate-900">
-              Find your ideal school
-            </h2>
-            <p className="mt-2 text-sm text-slate-500">
-              Start with a location, school name or board.
-            </p>
-
-            <form
-              className="mt-6 space-y-4"
-              onSubmit={(event) => {
-                event.preventDefault();
-                searchSchools();
-              }}
-            >
-              <label className="block">
-                <span className="mb-2 block text-sm font-semibold">Location</span>
-                <select
-                  value={area}
-                  onChange={(event) => setArea(event.target.value)}
-                  className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 outline-none focus:border-blue-500"
-                >
-                  <option>All Pune</option>
-                  {popularAreas.map((item) => (
-                    <option key={item}>{item}</option>
-                  ))}
-                </select>
-              </label>
-
-              <label className="block">
-                <span className="mb-2 block text-sm font-semibold">
-                  School name or keyword
-                </span>
-                <input
-                  value={query}
-                  onChange={(event) => setQuery(event.target.value)}
-                  placeholder="e.g. English medium school"
-                  className="w-full rounded-xl border border-slate-200 px-4 py-3 outline-none focus:border-blue-500"
-                />
-              </label>
-
-              <label className="block">
-                <span className="mb-2 block text-sm font-semibold">
-                  Education board
-                </span>
-                <select
-                  value={board}
-                  onChange={(event) => setBoard(event.target.value)}
-                  className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 outline-none focus:border-blue-500"
-                >
-                  <option>All Boards</option>
-                  <option>CBSE</option>
-                  <option>ICSE</option>
-                  <option>State Board</option>
-                  <option>IB</option>
-                  <option>Cambridge</option>
-                </select>
-              </label>
-
-              <button
-                type="submit"
-                className="w-full rounded-xl bg-orange-500 px-5 py-3.5 font-bold text-white transition hover:bg-orange-600"
-              >
-                Search Schools →
-              </button>
-            </form>
-          </div>
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-7xl px-5 py-14">
-        <div className="mb-7">
-          <p className="text-sm font-bold uppercase tracking-wider text-blue-700">
-            Explore by location
-          </p>
-          <h2 className="mt-2 text-2xl font-extrabold md:text-3xl">
-            Popular areas in Pune
-          </h2>
-          <p className="mt-2 text-slate-500">
-            Start exploring schools near your preferred neighbourhood.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-6">
-          {popularAreas.map((item) => (
-            <Link
-              key={item}
-              href={`/schools?area=${encodeURIComponent(item)}`}
-              className="rounded-xl border border-slate-200 px-4 py-5 text-center font-semibold transition hover:border-blue-400 hover:bg-blue-50 hover:text-blue-700"
-            >
-              <span className="mb-2 block text-xl">📍</span>
-              {item}
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      <section className="bg-slate-50 py-14">
-        <div className="mx-auto max-w-7xl px-5">
-          <p className="text-sm font-bold uppercase tracking-wider text-blue-700">
-            Find the right fit
-          </p>
-          <h2 className="mt-2 text-2xl font-extrabold md:text-3xl">
-            Explore schools by category
-          </h2>
-
-          <div className="mt-7 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {schoolTypes.map((item) => (
-              <Link
-                href="/schools"
-                key={item.title}
-                className="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
-              >
-                <span className="text-4xl">{item.icon}</span>
-                <h3 className="mt-5 font-bold text-slate-900">{item.title}</h3>
-                <p className="mt-2 text-sm text-slate-500">{item.subtitle}</p>
-                <span className="mt-5 inline-block text-sm font-bold text-blue-700">
-                  Explore schools →
-                </span>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-7xl px-5 py-14">
-        <div className="flex flex-col justify-between gap-5 rounded-3xl bg-blue-700 p-8 text-white md:flex-row md:items-center md:p-12">
-          <div>
-            <h2 className="text-2xl font-extrabold md:text-3xl">
-              Need help choosing a school?
-            </h2>
-            <p className="mt-3 max-w-xl text-blue-100">
-              Explore your options and prepare for your child&apos;s admission journey.
-            </p>
-          </div>
-          <Link
-            href="/counselling"
-            className="inline-flex shrink-0 justify-center rounded-xl bg-white px-6 py-3 font-bold text-blue-700 hover:bg-blue-50"
-          >
-            Get Guidance →
-          </Link>
-        </div>
-      </section>
-
-      <footer className="border-t border-slate-200 bg-white">
-        <div className="mx-auto flex max-w-7xl flex-col gap-3 px-5 py-7 text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between">
-          <p>© {new Date().getFullYear()} Schoolora. Your school discovery partner.</p>
-          <p>School discovery made simpler for families.</p>
-        </div>
-      </footer>
-    </main>
-  );
+    <section className="bottom-cta"><div className="wrap bottom-inner"><span className="bottom-flower">✿</span><div><span className="section-kicker">THE RIGHT SCHOOL IS OUT THERE</span><h2>Let&apos;s find a place<br/>they&apos;ll <em>love to learn.</em></h2></div><Link href="/schools" className="bottom-button">Find your school <span>→</span></Link><span className="bottom-scribble">✳</span></div></section></main>;
 }

@@ -1,0 +1,9 @@
+"use client";
+
+import Link from "next/link";
+import { useState } from "react";
+
+export default function SiteHeader() {
+  const [open, setOpen] = useState(false);
+  return <><div className="topline"><div className="wrap topinner"><span>India&apos;s trusted school discovery &amp; admissions platform</span><div><Link href="/counselling">Need help? Talk to an expert</Link><span className="top-phone">  +91 98703 33333</span></div></div></div><header className="site-header"><div className="wrap navrow"><Link href="/" className="brand"><span className="brand-mark">e</span><span>ezyschooling<span className="brand-dot">.</span><small>Find their happy place</small></span></Link><nav className="main-nav"><Link href="/day-schools">Day Schools</Link><Link href="/boarding-schools">Boarding</Link><Link href="/online-schools">Online</Link><Link href="/smart-search">Smart Search <span className="new-pill">NEW</span></Link><Link href="/compare-schools">Compare</Link><Link href="/shortlist">Shortlist</Link><Link href="/tools">Parent&apos;s Corner</Link></nav><div className="nav-actions"><Link href="/login" className="login-link">Log in</Link><Link href="/apply" className="nav-cta">Apply now <span>→</span></Link></div><button className="mobile-menu" aria-label="Toggle navigation" onClick={()=>setOpen(!open)}>☰</button></div>{open&&<nav className="mobile-nav"><Link href="/day-schools">Day schools</Link><Link href="/boarding-schools">Boarding schools</Link><Link href="/online-schools">Online schools</Link><Link href="/admissions">Admissions</Link><Link href="/apply">Common application</Link><Link href="/smart-search">Smart search</Link><Link href="/compare-schools">Compare schools</Link><Link href="/shortlist">Shortlist</Link><Link href="/tools">Parent&apos;s Corner</Link><Link href="/faqs">FAQs</Link><Link href="/login">Log in</Link></nav>}</header></>;
+}

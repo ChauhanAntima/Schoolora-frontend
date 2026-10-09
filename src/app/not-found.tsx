@@ -1,0 +1,2 @@
+import Link from "next/link";
+export default function NotFound(){return <main className="not-found"><div className="not-found-card"><span>✦ &nbsp; SCHOOL SEARCH</span><strong>404</strong><h1>This page is still on the school tour.</h1><p>We couldn&apos;t find that page. Start again from the directory or tell us what you&apos;re looking for.</p><div><Link className="result-enquire" href="/">Go home →</Link><Link className="outline-button" href="/schools">Explore schools</Link></div></div></main>}
